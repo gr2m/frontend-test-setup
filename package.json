@@ -1,0 +1,54 @@
+{
+  "name": "@gr2m/frontend-test-setup",
+  "version": "0.0.0-semantically-released",
+  "description": "reusable test setup for mocha, chai, browserify, webdriver, saucelabs & travis",
+  "main": "index.js",
+  "bin": {
+    "frontend-test-server": "bin/server.js",
+    "frontend-test-background": "bin/test-background.sh"
+  },
+  "scripts": {
+    "test": "standard",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "install_selenium": "install_selenium",
+    "install_chromedriver": "install_chromedriver",
+    "kill_selenium": "kill_selenium",
+    "start_selenium": "start_selenium",
+    "start_selenium_with_chromedriver": "start_selenium_with_chromedriver"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gr2m/frontend-test-setup.git"
+  },
+  "keywords": [
+    "mocha",
+    "chai",
+    "browserify",
+    "webdriver",
+    "saucelabs",
+    "travis"
+  ],
+  "author": "Gregor Martynus <gregor@martynus.net>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gr2m/frontend-test-setup/issues"
+  },
+  "homepage": "https://github.com/gr2m/frontend-test-setup#readme",
+  "dependencies": {
+    "beefy": "^2.1.5",
+    "chai": "^3.4.1",
+    "chai-as-promised": "^5.1.0",
+    "chalk": "^1.1.1",
+    "lodash.clone": "^3.0.3",
+    "lodash.defaultsdeep": "^3.10.0",
+    "npmlog": "^2.0.0",
+    "request": "^2.65.0",
+    "sauce-connect-launcher": "^0.13.0",
+    "sv-selenium": "^0.2.6",
+    "webdriverio": "^3.2.6"
+  },
+  "devDependencies": {
+    "standard": "^5.3.1",
+    "semantic-release": "^6.0.3"
+  }
+}
