@@ -152,13 +152,13 @@ below the option name.
       </td>
       <td><code>'.'</code></td>
     </tr>
-    </tr>
     <tr>
       <td>
         <strong>server.browserify</strong><br><br>
 
         Map of assets to be browserified. The example below will browserify
-        `index.js` and at `http://<server.host>:<server.port>/my-lib.js`
+        <code>index.js</code> and at
+        <code>http://&lt;server.host&gt;:&lt;server.port&gt;/my-lib.js&lt;/server&gt;</code>
 
 <pre>
 "entries": {
