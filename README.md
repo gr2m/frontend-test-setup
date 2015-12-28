@@ -74,10 +74,10 @@ as many different browser configurations using the `env.matrix` setting, e.g.
 ```
 env:
   matrix:
-  - TEST_CLIENT=selenium:firefox
-  - TEST_CLIENT=saucelabs:chrome
-  - TEST_CLIENT="saucelabs:internet explorer:10:Windows 8"
-  - TEST_CLIENT="saucelabs:iphone:8.4:OS X 10.11"
+  - CLIENT=selenium:firefox
+  - CLIENT=saucelabs:chrome
+  - CLIENT="saucelabs:internet explorer:10:Windows 8"
+  - CLIENT="saucelabs:iphone:8.4:OS X 10.11"
 ```
 
 ## Options
