@@ -7,7 +7,7 @@ var webdriverio = require('webdriverio')
 var chaiAsPromised = require('chai-as-promised')
 chai.use(chaiAsPromised)
 chai.should()
-var request = require('request').defaults({json: true})
+var request = require('request')
 
 var config = require('./lib/config')
 log.level = config.log.level
@@ -70,23 +70,21 @@ before(function (done) {
     }
 
     if (runner === 'selenium') {
-      startSelenium(startTest)
+      startSelenium(assureServer)
     } else {
-      startSauceConnect(startTest)
+      startSauceConnect(assureServer)
     }
 
     function startSelenium (callback) {
       log.verbose('selenium', 'starting ...')
-      request(config.selenium.hub, function (error, resp) {
-        if (error) throw error
-
+      request(config.selenium.hub, function (_error, resp) {
         if (resp && resp.statusCode === 200) {
           log.info('selenium', 'started')
           callback()
-        } else {
-          log.verbose('selenium', 'not yet ready ...')
-          setTimeout(started, 1000)
         }
+
+        log.verbose('selenium', 'not yet ready ...')
+        setTimeout(started, 1000)
       })
     }
 
@@ -105,6 +103,21 @@ before(function (done) {
           return process.exit(1)
         }
         callback()
+      })
+    }
+
+    function assureServer () {
+      log.verbose('test', 'checking server ...')
+      request(config.selenium.hub, function (error, resp) {
+        if (error) throw error
+
+        if (resp && resp.statusCode === 200) {
+          log.info('test', 'server found')
+          startTest()
+        } else {
+          log.verbose('test', 'not yet ready ...')
+          setTimeout(started, 1000)
+        }
       })
     }
 

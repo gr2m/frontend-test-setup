@@ -2,6 +2,7 @@
 
 var LOG_LEVEL = process.env.LOG_LEVEL || 'error'
 
+var exec = require('child_process').exec
 var http = require('http')
 
 var beefy = require('beefy')
@@ -10,19 +11,41 @@ var log = require('npmlog')
 var config = require('../lib/config')
 log.level = LOG_LEVEL
 
-var server = http.createServer(beefy({
-  cwd: config.server.cwd,
-  entries: config.server.browserify
-}))
+if (config.server.cmd) {
+  startCustomServer(config.server.cmd)
+} else {
+  startBeefy(config.server)
+}
 
-server.listen(config.server.port, config.server.host, function () {
-  console.log('Server startet at http://%s:%s', config.server.host, config.server.port)
-  log.info('frontend-test-server', 'serving static files from %s', config.server.cwd)
-  Object.keys(config.server.browserify).forEach(function (key) {
-    log.info('frontend-test-server', 'serving browserified %s at %s', config.server.browserify[key], key)
+function startCustomServer (command) {
+  log.info('frontend-test-server', 'Starting custom server')
+  log.silly('frontend-test-server', command)
+  exec(command, function (error, out, err) {
+    if (error) {
+      return log.error('frontend-test-server', error)
+    }
+    log.info('frontend-test-server', 'app started')
   })
-})
+}
 
-server.on('request', function (request, response) {
-  log.info('frontend-test-server', '%s %s', request.method, request.url, response.statusCode)
-})
+function startBeefy (serverConfig) {
+  log.info('frontend-test-server', 'Starting custom server with:')
+  log.silly('frontend-test-server', serverConfig)
+
+  var server = http.createServer(beefy({
+    cwd: serverConfig.cwd,
+    entries: serverConfig.browserify
+  }))
+
+  server.listen(serverConfig.port, serverConfig.host, function () {
+    console.log('Server startet at http://%s:%s', serverConfig.host, serverConfig.port)
+    log.info('frontend-test-server', 'serving static files from %s', serverConfig.cwd)
+    Object.keys(serverConfig.browserify).forEach(function (key) {
+      log.info('frontend-test-server', 'serving browserified %s at %s', serverConfig.browserify[key], key)
+    })
+  })
+
+  server.on('request', function (request, response) {
+    log.info('frontend-test-server', '%s %s', request.method, request.url, response.statusCode)
+  })
+}

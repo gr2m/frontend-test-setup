@@ -38,6 +38,7 @@ if [ $CI ] ; then
   node_modules/.bin/frontend-test-server &
 else
   mkdir -p log
+  echo 'logging to ./log/{server,selenium}.log'
   node_modules/.bin/start_selenium_with_chromedriver &>./log/selenium.log &
   node_modules/.bin/frontend-test-server &>./log/server.log &
 fi
