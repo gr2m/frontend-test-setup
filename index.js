@@ -76,11 +76,11 @@ before(function (done) {
     }
 
     function startSelenium (callback) {
-      log.verbose('selenium', 'starting ...')
-      request(config.selenium.hub, function (_error, resp) {
-        if (resp && resp.statusCode === 200) {
+      log.verbose('test', 'wating for selenium at ' + config.selenium.hub + '...')
+      request(config.selenium.hub, function (_error, response) {
+        if (response && response.statusCode === 200) {
           log.info('selenium', 'started')
-          callback()
+          return callback()
         }
 
         log.verbose('selenium', 'not yet ready ...')
@@ -107,17 +107,23 @@ before(function (done) {
     }
 
     function assureServer () {
-      log.verbose('test', 'checking server ...')
-      request(config.selenium.hub, function (error, resp) {
-        if (error) throw error
-
-        if (resp && resp.statusCode === 200) {
+      var url = 'http://' + config.server.host + ':' + config.server.port
+      log.verbose('test', 'waiting for server at ' + url + ' ...')
+      request(url, function (error, response, body) {
+        if (response && response.statusCode === 200) {
           log.info('test', 'server found')
-          startTest()
-        } else {
-          log.verbose('test', 'not yet ready ...')
-          setTimeout(started, 1000)
+          return startTest()
         }
+
+        if (error) {
+          log.verbose('test', error)
+        } else {
+          log.warn('test', 'server returns ' + response.statusCode + ' but tests expect 200')
+          log.verbose('test', body)
+        }
+
+        log.verbose('test', 'not yet ready, checking again ...')
+        setTimeout(assureServer, 1000)
       })
     }
 
@@ -129,6 +135,7 @@ before(function (done) {
       self.client.on('erorr', function (error) {
         log.error('selenium', chalk.red(error.body.value.class), error.body.value.message)
       })
+
       self.client.init(done)
     }
   }

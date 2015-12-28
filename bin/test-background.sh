@@ -3,11 +3,11 @@
 set -e
 
 # find bin paths. They are different for npm 2 / 3
-KILL_SELENIUM_PATH=`node -e "process.stdout.write(require('path').resolve(require.resolve('sv-selenium/package.json'), '../bin/kill_selenium'))"`
-INSTALL_SELENIUM_PATH=`node -e "process.stdout.write(require('path').resolve(require.resolve('sv-selenium/package.json'), '../bin/install_selenium'))"`
-INSTALL_CHROMEDRIVER_PATH=`node -e "process.stdout.write(require('path').resolve(require.resolve('sv-selenium/package.json'), '../bin/install_chromedriver'))"`
-START_SELENIUM_PATH=`node -e "process.stdout.write(require('path').resolve(require.resolve('sv-selenium/package.json'), '../bin/start_selenium'))"`
-START_SELENIUM_WITH_CHROMEDRIVER_PATH=`node -e "process.stdout.write(require('path').resolve(require.resolve('sv-selenium/package.json'), '../bin/start_selenium_with_chromedriver'))"`
+KILL_SELENIUM_PATH=`(cd node_modules/\\@gr2m/frontend-test-setup && node -e "process.stdout.write(require('path').resolve(require.resolve('sv-selenium/package.json'), '../bin/kill_selenium'))")`
+INSTALL_SELENIUM_PATH=`(cd node_modules/\\@gr2m/frontend-test-setup && node -e "process.stdout.write(require('path').resolve(require.resolve('sv-selenium/package.json'), '../bin/install_selenium'))")`
+INSTALL_CHROMEDRIVER_PATH=`(cd node_modules/\\@gr2m/frontend-test-setup && node -e "process.stdout.write(require('path').resolve(require.resolve('sv-selenium/package.json'), '../bin/install_chromedriver'))")`
+START_SELENIUM_PATH=`(cd node_modules/\\@gr2m/frontend-test-setup && node -e "process.stdout.write(require('path').resolve(require.resolve('sv-selenium/package.json'), '../bin/start_selenium'))")`
+START_SELENIUM_WITH_CHROMEDRIVER_PATH=`(cd node_modules/\\@gr2m/frontend-test-setup && node -e "process.stdout.write(require('path').resolve(require.resolve('sv-selenium/package.json'), '../bin/start_selenium_with_chromedriver'))")`
 
 function cleanup {
   set +e
@@ -35,11 +35,14 @@ trap cleanup EXIT
 if [ ! -d "/tmp/sv-selenium" ]; then
   echo 'Selenium not yet installed, downloading & installing ...'
   sh $INSTALL_SELENIUM_PATH
-  sh $INSTALL_CHROMEDRIVER_PATH
+  if [ ! $CI ] ; then
+    sh $INSTALL_CHROMEDRIVER_PATH
+  fi
 fi
 
 # show logs in Travis, pipe to log files locally
 if [ $CI ] ; then
+  echo 'CI detected, logging to stdout'
   # Travis does not support Chrome, so we only start Selenium
   sh $START_SELENIUM_PATH &
   node_modules/.bin/frontend-test-server &

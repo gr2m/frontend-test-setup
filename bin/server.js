@@ -20,11 +20,19 @@ if (config.server.cmd) {
 function startCustomServer (command) {
   log.info('frontend-test-server', 'Starting custom server')
   log.silly('frontend-test-server', command)
-  exec(command, function (error, out, err) {
+  var serverProcess = exec(command, function (error, out, err) {
     if (error) {
       return log.error('frontend-test-server', error)
     }
     log.info('frontend-test-server', 'app started')
+  })
+
+  serverProcess.stdout.on('data', function (data) {
+    log.verbose('frontend-test-server', data)
+  })
+
+  serverProcess.stderr.on('data', function (data) {
+    log.error('frontend-test-server', data)
   })
 }
 
