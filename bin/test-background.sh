@@ -2,10 +2,17 @@
 
 set -e
 
+# find bin paths. They are different for npm 2 / 3
+KILL_SELENIUM_PATH=`node -e "process.stdout.write(require('path').resolve(require.resolve('sv-selenium/package.json'), '../bin/kill_selenium'))"`
+INSTALL_SELENIUM_PATH=`node -e "process.stdout.write(require('path').resolve(require.resolve('sv-selenium/package.json'), '../bin/install_selenium'))"`
+INSTALL_CHROMEDRIVER_PATH=`node -e "process.stdout.write(require('path').resolve(require.resolve('sv-selenium/package.json'), '../bin/install_chromedriver'))"`
+START_SELENIUM_PATH=`node -e "process.stdout.write(require('path').resolve(require.resolve('sv-selenium/package.json'), '../bin/start_selenium'))"`
+START_SELENIUM_WITH_CHROMEDRIVER_PATH=`node -e "process.stdout.write(require('path').resolve(require.resolve('sv-selenium/package.json'), '../bin/start_selenium_with_chromedriver'))"`
+
 function cleanup {
   set +e
 
-  node_modules/.bin/frontend-test-kill-selenium
+  sh $KILL_SELENIUM_PATH
 
   # kill chrome driver
   CHROMEDRIVER_PID=`ps -ef | grep chromedriver | grep -v grep | awk '{print $2}'`
@@ -27,19 +34,19 @@ trap cleanup EXIT
 
 if [ ! -d "/tmp/sv-selenium" ]; then
   echo 'Selenium not yet installed, downloading & installing ...'
-  node_modules/.bin/install_selenium
-  node_modules/.bin/install_chromedriver
+  sh $INSTALL_SELENIUM_PATH
+  sh $INSTALL_CHROMEDRIVER_PATH
 fi
 
 # show logs in Travis, pipe to log files locally
 if [ $CI ] ; then
   # Travis does not support Chrome, so we only start Selenium
-  node_modules/.bin/start_selenium &
+  sh $START_SELENIUM_PATH &
   node_modules/.bin/frontend-test-server &
 else
   mkdir -p log
   echo 'logging to ./log/{server,selenium}.log'
-  node_modules/.bin/start_selenium_with_chromedriver &>./log/selenium.log &
+  sh $START_SELENIUM_WITH_CHROMEDRIVER_PATH &>./log/selenium.log &
   node_modules/.bin/frontend-test-server &>./log/server.log &
 fi
 
