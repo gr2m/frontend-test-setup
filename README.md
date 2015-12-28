@@ -53,7 +53,7 @@ describe('my demo page', function () {
   it('loads successfully', function () {
     return this.client
       .url('/')
-      .getTitle().should.eventually.equal("foo")
+      .getTitle().should.eventually.equal('foo')
   })
 })
 ```
@@ -167,6 +167,15 @@ below the option name.
 </pre>
       </td>
       <td><code>{}</code></td>
+    </tr>
+    <tr>
+      <td>
+        <strong>server.cmd</strong><br>
+        (<code>SERVER_CMD</code>)<br><br>
+
+        Command to start custom server
+      </td>
+      <td>e.g. <code>'npm start'</code></td>
     </tr>
     <tr>
       <td>
