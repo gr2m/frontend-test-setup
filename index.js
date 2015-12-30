@@ -130,13 +130,32 @@ before(function (done) {
     function startTest () {
       self.client.on('command', function (command) {
         log.info('selenium', chalk.cyan(command.method), command.uri.path)
+
+        if (command.data.script) {
+          command.data.script = getScriptName(command.data.script)
+        }
         log.info('selenium', command.data)
       })
       self.client.on('erorr', function (error) {
         log.error('selenium', chalk.red(error.body.value.class), error.body.value.message)
       })
 
-      self.client.init(done)
+      self.client
+        .init()
+
+        // http://webdriver.io/api/protocol/timeouts.html
+        .timeouts('script', config.timeout)
+        .timeouts('implicit', config.timeout)
+        .timeouts('page load', config.timeout)
+
+        .then(function () {
+          done()
+        })
+    }
+
+    function getScriptName (script) {
+      var matches = script.match(/return \(function ([^\(]+)\(/)
+      return matches ? matches[1] : '[function]'
     }
   }
 
