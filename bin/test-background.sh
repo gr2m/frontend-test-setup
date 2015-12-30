@@ -25,7 +25,7 @@ function cleanup {
   SERVER_PID=`ps -ef | grep 'frontend-test-server' | grep -v grep | awk '{print $2}'`
   if [ "$SERVER_PID" ] ; then
     kill -9 $SERVER_PID
-    echo "Killed beefy ($SERVER_PID)"
+    echo "Killed test server ($SERVER_PID)"
   fi
 }
 
