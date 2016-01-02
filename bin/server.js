@@ -7,6 +7,7 @@ var http = require('http')
 
 var beefy = require('beefy')
 var log = require('npmlog')
+var streamSplitter = require('stream-splitter')('\n')
 
 var config = require('../lib/config')
 log.level = LOG_LEVEL
@@ -27,12 +28,12 @@ function startCustomServer (command) {
     log.info('frontend-test-server', 'app started')
   })
 
-  serverProcess.stdout.on('data', function (data) {
-    log.verbose('frontend-test-server', data)
+  serverProcess.stdout.pipe(streamSplitter).on('token', function (line) {
+    log.verbose('frontend-test-server', line.toString())
   })
 
-  serverProcess.stderr.on('data', function (data) {
-    log.error('frontend-test-server', data)
+  serverProcess.stderr.pipe(streamSplitter).on('token', function (line) {
+    log.error('frontend-test-server', line.toString())
   })
 }
 
