@@ -154,7 +154,7 @@ before(function (done) {
     }
 
     function getScriptName (script) {
-      var matches = script.match(/return \(function ([^\(]+)\(/)
+      var matches = script.match(/return \(function (\w+)/)
       return matches ? matches[1] : '[function]'
     }
   }
