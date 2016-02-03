@@ -109,7 +109,12 @@ before(function (done) {
     function assureServer () {
       var url = 'http://' + config.server.host + ':' + config.server.port
       log.verbose('test', 'waiting for server at ' + url + ' ...')
-      request(url, function (error, response, body) {
+      request({
+        url: url,
+        headers: {
+          Accept: 'text/html'
+        }
+      }, function (error, response, body) {
         if (response && response.statusCode === 200) {
           log.info('test', 'server found')
           return startTest()
