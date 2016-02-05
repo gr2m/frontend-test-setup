@@ -22,7 +22,7 @@ Add a `"frontend-test-setup"` key to your package.json
       // path to static files
       "cwd": "demo",
       // browserify: path: module
-      "entries": {
+      "browserify": {
         "/bundle.js": "demo/vendor.js",
         "/smartdate-input.js": "index.js"
       }
@@ -161,7 +161,7 @@ below the option name.
         <code>http://&lt;server.host&gt;:&lt;server.port&gt;/my-lib.js&lt;/server&gt;</code>
 
 <pre>
-"entries": {
+"browserify": {
   "/my-lib.js": "index.js"
 }
 </pre>
