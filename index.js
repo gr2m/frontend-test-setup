@@ -96,7 +96,7 @@ before(function (done) {
         tunnelIdentifier: config.tunnelId
       }
 
-      sauceConnectLauncher(scOptions, function (error, process) {
+      sauceConnectLauncher(scOptions, function (error) {
         if (error) {
           log.error('sauce-connect', 'Failed to connect')
           log.error('sauce-connect', error)
