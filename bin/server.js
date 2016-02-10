@@ -4,6 +4,7 @@ var LOG_LEVEL = process.env.LOG_LEVEL || 'error'
 
 var exec = require('child_process').exec
 var http = require('http')
+var path = require('path')
 
 var beefy = require('beefy')
 var log = require('npmlog')
@@ -13,15 +14,17 @@ var config = require('../lib/config')
 log.level = LOG_LEVEL
 
 if (config.server.cmd) {
-  startCustomServer(config.server.cmd)
+  startCustomServer(config.server)
 } else {
   startBeefy(config.server)
 }
 
-function startCustomServer (command) {
+function startCustomServer (serverConfig) {
   log.info('frontend-test-server', 'Starting custom server')
-  log.silly('frontend-test-server', command)
-  var serverProcess = exec(command + ' --frontend-test-server', function (error, out, err) {
+  log.silly('frontend-test-server', serverConfig.cmd)
+  var serverProcess = exec(serverConfig.cmd + ' --frontend-test-server', {
+    cwd: path.resolve(process.cwd(), serverConfig.cwd || '')
+  }, function (error, out, err) {
     if (error) {
       return log.error('frontend-test-server', error)
     }
@@ -43,7 +46,8 @@ function startBeefy (serverConfig) {
 
   var server = http.createServer(beefy({
     cwd: serverConfig.cwd,
-    entries: serverConfig.browserify
+    entries: serverConfig.browserify,
+    bundlerFlags: serverConfig.browserifyFlags
   }))
 
   server.listen(serverConfig.port, serverConfig.host, function () {
