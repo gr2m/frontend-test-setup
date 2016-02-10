@@ -148,7 +148,8 @@ below the option name.
       <td>
         <strong>server.cwd</strong><br><br>
 
-        path from where to server static assets
+        path from where to server static assets. If <code>server.cmd</code> is
+        set, it runs the command in the given path (relative to repository’s root)
       </td>
       <td><code>'.'</code></td>
     </tr>
