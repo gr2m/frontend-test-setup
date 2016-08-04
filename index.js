@@ -62,9 +62,10 @@ before(function (done) {
   this.timeout(config.timeout)
   this.client = client
 
-  var retries = 0
+  var seleniumRetries = 0
+  var saucelabsRetries = 0
   var started = function () {
-    if (++retries > 60) {
+    if (++seleniumRetries > 60) {
       done('Unable to connect to selenium')
       return
     }
@@ -97,12 +98,26 @@ before(function (done) {
       }
 
       sauceConnectLauncher(scOptions, function (error) {
-        if (error) {
-          log.error('sauce-connect', 'Failed to connect')
+        if (!error) {
+          return callback()
+        }
+
+        if (/Not authorized/i.test(error.message)) {
           log.error('sauce-connect', error)
           return process.exit(1)
         }
-        callback()
+
+        if (++saucelabsRetries > 10) {
+          log.error('sauce-connect', 'Failed to connect in 10 attempts')
+          log.error('sauce-connect', error)
+          return process.exit(1)
+        }
+
+        log.warn('sauce-connect', 'Failed to connect')
+        log.warn('sauce-connect', error)
+        log.warn('sauce-connect', 'Retry ' + saucelabsRetries + '/10 in 1 minute')
+
+        setTimeout(startSauceConnect.bind(null, callback), 60 * 1000)
       })
     }
 
