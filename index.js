@@ -66,7 +66,7 @@ before(function (done) {
   var saucelabsRetries = 0
   var started = function () {
     if (++seleniumRetries > 60) {
-      done('Unable to connect to selenium')
+      done(new Error('Unable to connect to selenium'))
       return
     }
 
