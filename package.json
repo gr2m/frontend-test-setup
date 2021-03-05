@@ -16,10 +16,7 @@
     "start_selenium": "start_selenium",
     "start_selenium_with_chromedriver": "start_selenium_with_chromedriver"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/gr2m/frontend-test-setup.git"
-  },
+  "repository": "github:gr2m/frontend-test-setup",
   "keywords": [
     "mocha",
     "chai",
@@ -30,10 +27,6 @@
   ],
   "author": "Gregor Martynus <gregor@martynus.net>",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/gr2m/frontend-test-setup/issues"
-  },
-  "homepage": "https://github.com/gr2m/frontend-test-setup#readme",
   "dependencies": {
     "beefy": "^2.1.5",
     "chai": "^3.4.1",
